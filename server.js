@@ -5,6 +5,7 @@ const cors = require('cors');
 const userRoutes = require('./routes/users');
 const orderRoutes = require('./routes/orders');
 const authRoutes = require('./routes/auth');
+const proxyAuthRoutes = require('./routes/proxy-auth');
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/proxy-auth', proxyAuthRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
