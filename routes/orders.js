@@ -29,6 +29,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const order = new Order({
+            nameClient: req.body.nameClient,
             nameOfProduct: req.body.nameOfProduct,
             priceOfProduct: req.body.priceOfProduct,
             quantity: req.body.quantity,
@@ -53,6 +54,7 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Order not found' });
         }
 
+        order.nameClient = req.body.nameClient || order.nameClient;
         order.nameOfProduct = req.body.nameOfProduct || order.nameOfProduct;
         order.priceOfProduct = req.body.priceOfProduct || order.priceOfProduct;
         order.quantity = req.body.quantity || order.quantity;
