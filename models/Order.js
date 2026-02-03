@@ -6,6 +6,11 @@ const orderSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    phone: {
+        type: String,
+        required: true,
+        trim: true
+    },
     nameOfProduct: {
         type: String,
         required: true,

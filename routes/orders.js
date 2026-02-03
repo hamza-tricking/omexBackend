@@ -30,6 +30,7 @@ router.post('/', async (req, res) => {
     try {
         const order = new Order({
             nameClient: req.body.nameClient,
+            phone: req.body.phone,
             nameOfProduct: req.body.nameOfProduct,
             priceOfProduct: req.body.priceOfProduct,
             quantity: req.body.quantity,
@@ -55,6 +56,7 @@ router.put('/:id', async (req, res) => {
         }
 
         order.nameClient = req.body.nameClient || order.nameClient;
+        order.phone = req.body.phone || order.phone;
         order.nameOfProduct = req.body.nameOfProduct || order.nameOfProduct;
         order.priceOfProduct = req.body.priceOfProduct || order.priceOfProduct;
         order.quantity = req.body.quantity || order.quantity;
