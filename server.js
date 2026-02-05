@@ -13,9 +13,18 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+const allowedOrigins = ['http://localhost:3001', 'https://dmtart.pro', 'https://www.omexuae.com'];
+
 app.use(cors({
-    origin: ['http://localhost:3001', 'https://dmtart.pro', 'https://www.omexuae.com'],
-    credentials: true
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true); // Allow requests without origin like Postman
+    if(allowedOrigins.includes(origin)){
+      callback(null, true); // Allow request
+    } else {
+      callback(new Error('Not allowed by CORS')); // Block any unallowed origin
+    }
+  },
+  credentials: true
 }));
 app.use(express.json());
 
