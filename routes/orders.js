@@ -97,4 +97,17 @@ router.get('/status/:status', async (req, res) => {
     }
 });
 
+// DELETE all orders
+router.delete('/all', async (req, res) => {
+    try {
+        const result = await Order.deleteMany({});
+        res.json({ 
+            message: 'All orders deleted successfully',
+            deletedCount: result.deletedCount 
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 module.exports = router;
