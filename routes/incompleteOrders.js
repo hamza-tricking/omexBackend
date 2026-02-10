@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
     try {
         const order = new IncompleteOrder({
             nameClient: req.body.nameClient || req.body.name,
-            phone: req.body.phone,
+            phone: req.body.phone || null,
             nameOfProduct: req.body.nameOfProduct || 'Pocket Explorer Kids Digital Microscope',
             priceOfProduct: req.body.priceOfProduct || 179,
             quantity: req.body.quantity,
