@@ -6,6 +6,7 @@ const userRoutes = require('./routes/users');
 const orderRoutes = require('./routes/orders');
 const authRoutes = require('./routes/auth');
 const proxyAuthRoutes = require('./routes/proxy-auth');
+const incompleteOrderRoutes = require('./routes/incompleteOrders');
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/proxy-auth', proxyAuthRoutes);
+app.use('/api/incomplete-orders', incompleteOrderRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
