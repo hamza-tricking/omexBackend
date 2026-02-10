@@ -29,21 +29,29 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const order = new IncompleteOrder({
-            nameClient: req.body.nameClient,
+            nameClient: req.body.nameClient || req.body.name,
             phone: req.body.phone,
-            nameOfProduct: req.body.nameOfProduct,
-            priceOfProduct: req.body.priceOfProduct,
+            nameOfProduct: req.body.nameOfProduct || 'Pocket Explorer Kids Digital Microscope',
+            priceOfProduct: req.body.priceOfProduct || 179,
             quantity: req.body.quantity,
             address: req.body.address,
             city: req.body.city,
-            color: req.body.color,
+            color: req.body.color || req.body.selectedColor,
             status: req.body.status || 'incomplete',
-            notes: req.body.notes
+            notes: req.body.notes,
+            // New fields for tracking
+            selectedColor: req.body.selectedColor,
+            selectedPackage: req.body.selectedPackage,
+            timestamp: req.body.timestamp,
+            exitReason: req.body.exitReason,
+            userAgent: req.body.userAgent,
+            page: req.body.page
         });
         
         const newOrder = await order.save();
         res.status(201).json(newOrder);
     } catch (error) {
+        console.error('Error creating incomplete order:', error);
         res.status(400).json({ message: error.message });
     }
 });

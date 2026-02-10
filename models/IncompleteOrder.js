@@ -47,6 +47,31 @@ const incompleteOrderSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    // Additional fields for tracking incomplete orders
+    selectedColor: {
+        type: String,
+        trim: true
+    },
+    selectedPackage: {
+        type: String,
+        trim: true
+    },
+    timestamp: {
+        type: String,
+        trim: true
+    },
+    exitReason: {
+        type: String,
+        trim: true
+    },
+    userAgent: {
+        type: String,
+        trim: true
+    },
+    page: {
+        type: String,
+        trim: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
