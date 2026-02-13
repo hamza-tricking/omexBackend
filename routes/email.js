@@ -63,14 +63,20 @@ router.post('/send-incomplete-notification', async (req, res) => {
 // Send contact form email
 router.post('/send-contact-form', async (req, res) => {
     try {
+        console.log('📧 Contact Form Request Received:');
+        console.log('- Body:', JSON.stringify(req.body, null, 2));
+        
         const { name, email, phone, subject, message, formType = 'contact' } = req.body;
 
         if (!name || !email || !message) {
+            console.log('❌ Validation Error: Missing required fields');
             return res.status(400).json({ 
                 message: 'Name, email, and message are required' 
             });
         }
 
+        console.log('📧 Processing contact form...');
+        
         // Create HTML email template
         const htmlContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -101,11 +107,13 @@ router.post('/send-contact-form', async (req, res) => {
                 </div>
                 
                 <div style="text-align: center; margin-top: 30px; padding: 20px; background: #d4edda; border-radius: 10px;">
-                    <p style="margin: 0; color: #155724;">📩 We'll respond to this inquiry as soon as possible!</p>
+                    <p style="margin: 0; color: #155724;">📩 Please respond to this inquiry as soon as possible!</p>
                 </div>
             </div>
         `;
 
+        console.log('📧 Sending emails...');
+        
         // Send confirmation to customer AND notification to admin
         const [customerResult, adminResult] = await Promise.all([
             emailService.sendEmail({
@@ -118,23 +126,32 @@ router.post('/send-contact-form', async (req, res) => {
                 to: process.env.ADMIN_EMAIL || 'admin@omexuae.com',
                 subject: `New Contact Form: ${subject || 'General Inquiry'} - ${name}`,
                 html: htmlContent,
-                text: `Contact Form Submission\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject || 'General Inquiry'}\n\nMessage:\n${message}`
+                text: `Contact Form Submission\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\nSubject: ${subject || 'General Inquiry'}\n\nMessage:\n${message}`
             })
         ]);
         
+        console.log('📧 Email Results:');
+        console.log('- Customer Result:', customerResult);
+        console.log('- Admin Result:', adminResult);
+        
         if (customerResult.success && adminResult.success) {
+            console.log('✅ Both emails sent successfully');
             res.json({ 
                 message: 'Contact form submitted successfully',
                 customerEmailId: customerResult.messageId,
                 adminEmailId: adminResult.messageId
             });
         } else {
+            console.log('❌ Email sending failed:');
+            console.log('- Customer Error:', customerResult.error);
+            console.log('- Admin Error:', adminResult.error);
             res.status(500).json({ 
                 message: 'Failed to send contact form',
                 error: customerResult.error || adminResult.error
             });
         }
     } catch (error) {
+        console.error('💥 Server Error:', error);
         res.status(500).json({ message: error.message });
     }
 });

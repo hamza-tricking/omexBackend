@@ -15,20 +15,26 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-const allowedOrigins = ['http://localhost:3000', 'https://dmtart.pro', 'https://www.omexuae.com'];
+const allowedOrigins = ['http://localhost:3000', 'https://dmtart.pro', 'https://www.omexuae.com', 'https://lisanakademie.de'];
 
 app.use(cors({
   origin: function(origin, callback){
+    console.log('🔍 CORS Request - Origin:', origin);
+    console.log('🔍 Allowed Origins:', allowedOrigins);
+    
     if(!origin) return callback(null, true); // Allow requests without origin like Postman
     if(allowedOrigins.includes(origin)){
-      callback(null, true); // Allow request
+      console.log('✅ CORS Allowed for origin:', origin);
+      return callback(null, true); // Allow request
     } else {
-      callback(new Error('Not allowed by CORS')); // Block any unallowed origin
+      console.log('❌ CORS Blocked for origin:', origin);
+      return callback(new Error('Not allowed by CORS')); // Block any unallowed origin
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200 // Respond with 200 for preflight
 }));
 app.use(express.json());
 
