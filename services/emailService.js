@@ -17,6 +17,13 @@ const transporter = nodemailer.createTransport({
 // Send email function
 const sendEmail = async (options) => {
     try {
+        console.log('📧 Email Service Debug:');
+        console.log('- To:', options.to);
+        console.log('- Subject:', options.subject);
+        console.log('- From:', process.env.EMAIL_USER);
+        console.log('- SMTP Host:', process.env.SMTP_HOST);
+        console.log('- SMTP Port:', process.env.SMTP_PORT);
+        
         const mailOptions = {
             from: `"${process.env.FROM_NAME || 'Omex UAE'}" <${process.env.EMAIL_USER}>`,
             to: options.to,
@@ -26,10 +33,13 @@ const sendEmail = async (options) => {
         };
 
         const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent: ' + info.messageId);
+        console.log('✅ Email sent successfully. Message ID:', info.messageId);
         return { success: true, messageId: info.messageId };
     } catch (error) {
-        console.error('Email error:', error);
+        console.error('❌ Email Error Details:');
+        console.error('- Error Code:', error.code);
+        console.error('- Error Message:', error.message);
+        console.error('- Full Error:', error);
         return { success: false, error: error.message };
     }
 };
