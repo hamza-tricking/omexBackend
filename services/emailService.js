@@ -2,7 +2,9 @@ const nodemailer = require('nodemailer');
 
 // Create transporter with SMTP configuration
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // Use Gmail service instead of custom host
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // false for 587, true for 465
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -10,7 +12,10 @@ const transporter = nodemailer.createTransport({
     debug: true, // Enable debug logging
     connectionTimeout: 30000, // 30 seconds timeout
     greetingTimeout: 15000, // 15 seconds greeting timeout
-    socketTimeout: 20000 // 20 seconds socket timeout
+    socketTimeout: 20000, // 20 seconds socket timeout
+    tls: {
+        rejectUnauthorized: false
+    }
 });
 
 // Send email function
