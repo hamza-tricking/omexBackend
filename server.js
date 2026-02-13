@@ -22,19 +22,23 @@ app.use(cors({
     console.log('🔍 CORS Request - Origin:', origin);
     console.log('🔍 Allowed Origins:', allowedOrigins);
     
-    if(!origin) return callback(null, true); // Allow requests without origin like Postman
+    // Allow requests without origin (like Postman, curl, etc.)
+    if(!origin) return callback(null, true);
+    
+    // Check if origin is in allowed list
     if(allowedOrigins.includes(origin)){
       console.log('✅ CORS Allowed for origin:', origin);
-      return callback(null, true); // Allow request
+      return callback(null, true);
     } else {
       console.log('❌ CORS Blocked for origin:', origin);
-      return callback(new Error('Not allowed by CORS')); // Block any unallowed origin
+      return callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200 // Respond with 200 for preflight
+  optionsSuccessStatus: 200, // Respond with 200 for preflight
+  preflightContinue: true // Allow preflight requests to continue
 }));
 app.use(express.json());
 
