@@ -25,7 +25,8 @@ const sendEmail = async (options) => {
             to: options.to,
             subject: options.subject,
             html: options.html,
-            text: options.text
+            text: options.text,
+            priority: 'high' // Set high priority for better delivery
         };
 
         const info = await transporter.sendMail(mailOptions);
