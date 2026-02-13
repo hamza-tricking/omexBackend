@@ -7,7 +7,6 @@ const orderRoutes = require('./routes/orders');
 const authRoutes = require('./routes/auth');
 const proxyAuthRoutes = require('./routes/proxy-auth');
 const incompleteOrderRoutes = require('./routes/incompleteOrders');
-const emailRoutes = require('./routes/email');
 
 dotenv.config();
 
@@ -15,30 +14,18 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-const allowedOrigins = ['http://localhost:3000', 'https://dmtart.pro', 'https://www.omexuae.com', 'https://lisanakademie.de'];
+const allowedOrigins = ['http://localhost:3000', 'https://dmtart.pro', 'https://www.omexuae.com'];
 
 app.use(cors({
   origin: function(origin, callback){
-    console.log('🔍 CORS Request - Origin:', origin);
-    console.log('🔍 Allowed Origins:', allowedOrigins);
-    
-    // Allow requests without origin (like Postman, curl, etc.)
-    if(!origin) return callback(null, true);
-    
-    // Check if origin is in allowed list
+    if(!origin) return callback(null, true); // Allow requests without origin like Postman
     if(allowedOrigins.includes(origin)){
-      console.log('✅ CORS Allowed for origin:', origin);
-      return callback(null, true);
+      callback(null, true); // Allow request
     } else {
-      console.log('❌ CORS Blocked for origin:', origin);
-      return callback(new Error('Not allowed by CORS'));
+      callback(new Error('Not allowed by CORS')); // Block any unallowed origin
     }
   },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200, // Respond with 200 for preflight
-  preflightContinue: true // Allow preflight requests to continue
+  credentials: true
 }));
 app.use(express.json());
 
@@ -48,7 +35,6 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/proxy-auth', proxyAuthRoutes);
 app.use('/api/incomplete-orders', incompleteOrderRoutes);
-app.use('/api/email', emailRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
