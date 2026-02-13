@@ -7,7 +7,10 @@ const transporter = nodemailer.createTransport({
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
-    debug: true // Enable debug logging
+    debug: true, // Enable debug logging
+    connectionTimeout: 30000, // 30 seconds timeout
+    greetingTimeout: 15000, // 15 seconds greeting timeout
+    socketTimeout: 20000 // 20 seconds socket timeout
 });
 
 // Send email function
