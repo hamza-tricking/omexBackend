@@ -101,28 +101,37 @@ router.post('/send-contact-form', async (req, res) => {
                 </div>
                 
                 <div style="text-align: center; margin-top: 30px; padding: 20px; background: #d4edda; border-radius: 10px;">
-                    <p style="margin: 0; color: #155724;">📩 Please respond to this inquiry as soon as possible!</p>
+                    <p style="margin: 0; color: #155724;">📩 We'll respond to this inquiry as soon as possible!</p>
                 </div>
             </div>
         `;
 
-        // Send to admin
-        const result = await emailService.sendEmail({
-            to: process.env.ADMIN_EMAIL || 'admin@omexuae.com',
-            subject: `Contact Form: ${subject || 'New Message from ' + name}`,
-            html: htmlContent,
-            text: `Contact Form Submission\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\nSubject: ${subject || 'General Inquiry'}\n\nMessage:\n${message}`
-        });
+        // Send confirmation to customer AND notification to admin
+        const [customerResult, adminResult] = await Promise.all([
+            emailService.sendEmail({
+                to: email, // Send to customer who submitted the form
+                subject: `Thank you for contacting Omex UAE - ${subject || 'General Inquiry'}`,
+                html: htmlContent,
+                text: `Thank you for contacting us!\n\nName: ${name}\nEmail: ${email}\n\nWe'll respond within 24 hours.`
+            }),
+            emailService.sendEmail({
+                to: process.env.ADMIN_EMAIL || 'admin@omexuae.com',
+                subject: `New Contact Form: ${subject || 'General Inquiry'} - ${name}`,
+                html: htmlContent,
+                text: `Contact Form Submission\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject || 'General Inquiry'}\n\nMessage:\n${message}`
+            })
+        ]);
         
-        if (result.success) {
+        if (customerResult.success && adminResult.success) {
             res.json({ 
                 message: 'Contact form submitted successfully',
-                messageId: result.messageId 
+                customerEmailId: customerResult.messageId,
+                adminEmailId: adminResult.messageId
             });
         } else {
             res.status(500).json({ 
                 message: 'Failed to send contact form',
-                error: result.error 
+                error: customerResult.error || adminResult.error
             });
         }
     } catch (error) {
